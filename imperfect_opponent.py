@@ -200,4 +200,5 @@ def play_game():
         row, col = flat_to_board(computer_move)
         board[row][col] = 2
 
-play_game()
+if __name__ == "__main__":
+    play_game()
