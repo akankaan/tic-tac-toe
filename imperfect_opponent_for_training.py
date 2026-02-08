@@ -105,28 +105,34 @@ def move_decide(board):
     
     return -1
 
-def play_turn(board, player_move):
-
+def step_agent(board, player_move):
     empty_positions = get_empty_positions(board)
     if player_move not in empty_positions:
-        return board, 0, True  # give 0 to reinforce illegal moves are bad
+        return board, -1, True  # illegal move
 
-    # player move (X)
     r, c = flat_to_board(player_move)
     board[r][c] = 1
+
     if check_winner(board, 1):
         return board, +1, True
-    if len(get_empty_positions(board)) == 0:
-        return board, 0.55, True  # i think drawing should be more good than bad
-                           # for my purposes so made it closer to 1
 
-    # opponent move (O)
+    if len(get_empty_positions(board)) == 0:
+        return board, 0, True   # draw
+
+    return board, 0, False
+
+def step_opponent(board):
     opp_move = move_decide(board)
+    if opp_move == -1:
+        return board, 0, True  # no moves left, so draw
+
     r, c = flat_to_board(opp_move)
     board[r][c] = 2
+
     if check_winner(board, 2):
-        return board, 0, True
+        return board, -1, True
+
     if len(get_empty_positions(board)) == 0:
-        return board, 0, True  # draw
+        return board, 0, True
 
     return board, 0, False
