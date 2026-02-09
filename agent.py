@@ -48,7 +48,7 @@ for i in all_states:
 # Learning parameters
 alpha        = 0.2
 gamma        = 1.0
-episode_num  = 300000
+episode_num  = 1000000
 
 # epsilon-greedy with exponential decay
 initial_epsilon = 1.0
