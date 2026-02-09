@@ -136,3 +136,22 @@ def step_opponent(board):
         return board, 0, True
 
     return board, 0, False
+
+def step(board, agent_move):
+
+    # Agent's move
+    board, reward_agent, done = step_agent(board, agent_move)
+    if done:
+        return board, reward_agent, done
+    
+    # Opponent's move (reward opponent it still relative to agent)
+    board, reward_opponent, done = step_opponent(board)
+
+    # Total reward
+    reward = reward_agent + reward_opponent
+
+    return board, reward, done
+
+
+    
+    
