@@ -22,7 +22,7 @@ def best_move(board, V):
 V = load_v("value_table2.json")
 results = {"wins": 0, "draws": 0, "losses": 0}
 
-print("Testing 100 games...\n")
+print("Testing 1000 games...\n")
 
 for test_num in range(1000):
     board = [[0]*3 for _ in range(3)]
@@ -53,5 +53,5 @@ for test_num in range(1000):
 print(f"Wins:   {results['wins']}")
 print(f"Draws:  {results['draws']}")
 print(f"Losses: {results['losses']}")
-print(f"\nWin rate: {results['wins']}%")
-print(f"Draw rate: {results['draws']}%")
+print(f"\nWin rate: {results['wins']/10}%")
+print(f"Draw rate: {results['draws']/10}%")

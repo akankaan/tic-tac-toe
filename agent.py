@@ -62,6 +62,9 @@ def to_key(b):
     )
 
 for ep in range(0, episode_num):
+
+    if ( ep % 6000 == 0 ):
+        print(( ep * 100 ) / episode_num )
     effective_epsilon = max(0.01, initial_epsilon * (epsilon_decay ** ep))
 
     board = [[0,0,0],[0,0,0],[0,0,0]]
@@ -97,22 +100,29 @@ for ep in range(0, episode_num):
         # Play X in environment
         board, reward_x, done = ioppt.step_agent(board, a)
 
+        s_after_x = to_key(board)   # After X state (before O moves)
+
         if done:
-            # Check termination right after X move
+            # Terminates right after X
             V[s] = V[s] + alpha * (reward_x - V[s])
             break
 
         # Environment plays O
         board, reward_o, done = ioppt.step_opponent(board)
 
+        s_after_o = to_key(board)   # After O state (before X moves the next round)
         tot_reward = reward_x + reward_o
 
+        # Update state after x had played
         if done:
-            # Finishes after O moves
-            V[s] = V[s] + alpha * (tot_reward - V[s])
+            # If game terminates after O moves, s_after_x should go to -1
+            V[s_after_x] = V[s_after_x] + alpha * (reward_o - V[s_after_x])
         else:
-            s_next = to_key(board)  # next X-to-move state
-            V[s] = V[s] + alpha * ((tot_reward + gamma * V[s_next]) - V[s])
+            V[s_after_x] = V[s_after_x] + alpha * ((reward_o + gamma * V[s_after_o]) - V[s_after_x])
+
+        # Updates state before X had moved
+        V[s] = V[s] + alpha * ((reward_x + gamma * V[s_after_x]) - V[s])
+
 
 # Save value table with pickle        
 # with open("value_table.pkl", "wb") as f:
