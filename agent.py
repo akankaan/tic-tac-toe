@@ -5,6 +5,7 @@ import environment as ioppt
 import random
 import pickle
 import json
+import itertools
 
 # 0 denotes empty spot, 1 is "X", 2 is "O"
 empty_board = [[0, 0, 0], 
@@ -18,37 +19,16 @@ board = [[0, 0, 0],
 # Generates all board configurations, even if not possible by game rules
 all_states = []
 
-def state_generation():
-    for a in range(0, 3):
-        for b in range(0, 3):
-            for c in range(0, 3):
-                for d in range(0, 3):
-                    for e in range(0, 3):
-                        for f in range(0, 3):
-                            for g in range(0, 3):
-                                for h in range(0, 3):
-                                    for i in range(0, 3):
-                                        all_states.append([[a, b, c], 
-                                                           [d, e, f],
-                                                           [g, h, i]])
-
-state_generation()
+all_states = list(itertools.product([0, 1, 2], repeat=9))
 
 # Creates a value table with every value initialized to 0
-V = {}
 
-for i in all_states:
-    key = (
-        i[0][0], i[0][1], i[0][2],
-        i[1][0], i[1][1], i[1][2],
-        i[2][0], i[2][1], i[2][2],
-    )
-    V[key] = 0
+V = {i: 0.0 for i in all_states}
 
 # Learning parameters
 alpha        = 0.2
 gamma        = 1.0
-episode_num  = 1000000
+episode_num  = 3000000
 
 # epsilon-greedy with exponential decay
 initial_epsilon = 1.0
@@ -111,7 +91,6 @@ for ep in range(0, episode_num):
         board, reward_o, done = ioppt.step_opponent(board)
 
         s_after_o = to_key(board)   # After O state (before X moves the next round)
-        tot_reward = reward_x + reward_o
 
         # Update state after x had played
         if done:
